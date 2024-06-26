@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Account Settings{% endblock %}
+
+
+
+{% block content %}
+<style>
+    .settings-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #1c1f2e;
+        color: white;
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+    }
+    .settings-title {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .settings-form {
+        background-color: #4e89ae;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 500px;
+        margin: 20px 0;
+    }
+    .settings-form h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        text-align: center;
+    }
+    .settings-form label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 16px;
+        color: #fff;
+    }
+    .settings-form input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    .settings-form button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #1c1f2e;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .settings-form button:hover {
+        background-color: #374056;
+    }
+    
+</style>
+
+<div class="settings-container">
+    <div class="settings-title">Settings</div>
+    
+
+
+    <form class="settings-form" method="POST">
+        <label for="nickname">Nickname</label>
+        <input type="text" id="nickname" name="nickname" value="{{dis_nickname}}" required>
+
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" name="fn" value="{{dis_fn}}" >
+
+        <label for="second-name">Second Name</label>
+        <input type="text" id="second-name" name="sn" value="{{dis_sn}}" >
+
+        <label for="login">Login</label>
+        <input type="text" id="login" name="login" value="{{dis_login}}" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="{{dis_email}}" required>
+
+        <label for="password">Password</label>
+        <input type="login" id="password" name="password" value="{{dis_password}}" required>
+
+        <button type="submit">Save Changes</button>
+    </form>
+    
+</div>
+{% endblock %}

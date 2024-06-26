@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1c1f2e; /* Dark blue background */
+            color: white;
+        }
+        .header {
+            background-color: #162447; /* Darker blue */
+            color: white;
+            padding: 10px; /* Reduced padding */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header img {
+            border-radius: 10px;
+            width: 80px; /* Reduced width */
+            height: 40px; /* Reduced height */
+        }
+        .navbar {
+            background-color: #1f4068; /* Dark blue */
+            color: white;
+            padding: 10px; /* Reduced padding */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-buttons {
+            display: flex;
+            width: 80%;
+            gap: 10px;
+        }
+        .nav-buttons a {
+            background-color: #1b1b2f; /* Even darker blue */
+            color: white;
+            border: none;
+            padding: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            flex-grow: 1;
+            text-align: center;
+            text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-buttons a:hover {
+            background-color: #4e89ae; /* Light blue */
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.png" alt="Logo">
+    </div>
+    <div class="navbar">
+        <div class="nav-buttons">
+            <a href="/home">Home</a>
+            <a href="/news">News</a>
+            <a href="/messages">Messenger</a>
+            <a href="/account">Account</a>
+        </div>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Account{% endblock %}
+
+
+
+{% block content %}
+
+<style>
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #1c1f2e;
+        color: white;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+    .profile-card {
+        background-color: #4e89ae;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 350px;
+        text-align: center;
+    }
+    .profile-card img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        border: 3px solid #1c1f2e;
+    }
+    .profile-card h2 {
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+    .profile-card p {
+        margin: 5px 0;
+        font-size: 18px;
+    }
+    .profile-card .info {
+        margin-bottom: 20px;
+    }
+    .profile-card a {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #1c1f2e;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: 5px;
+    }
+    .profile-card a:hover {
+        background-color: #374056;
+    }
+    .green-flash-message {
+        background-color: #3bb771;
+        color: rgb(255, 255, 255);
+        padding: 15px 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        margin: 20px auto;
+        width: fit-content;
+        font-size: 16px;
+    }
+</style>
+
+{% with flash = get_flashed_messages() %}
+    {% if flash %}
+        {% for msg in flash%}
+            <div class="green-flash-message">
+                {{msg}}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="profile-container">
+    <div class="profile-card">
+        <img >
+        <h2>{{nickname}}</h2>
+        <div class="info">
+            <p><strong>First Name:</strong> {{fn}}</p>
+            <p><strong>Second Name:</strong> {{sn}}</p>
+            <p><strong>Email:</strong> {{email}}</p>
+            <p><strong>ID:</strong> 12345</p>
+        </div>
+        <a href="/settings" class="settings-button">Settings</a>
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</div>
+
+
+{% endblock %}
