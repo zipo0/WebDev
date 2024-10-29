@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Minecraft Server</title>
+    <!-- Подключение Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Подключение Minecraft-стиля шрифта -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Подключение Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1d1f27;
+            color: #f1f1f1;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Header стили */
+        header {
+            padding: 60px 40px;
+            background: linear-gradient(rgba(29, 31, 39, 0.85), rgba(29, 31, 39, 0.85)), 
+                        url("{{ url_for('static', filename='images/shopback.png') }}") no-repeat center center / cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+        }
+
+        /* Кнопка "Назад" */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Название раздела */
+        .section-title {
+            font-size: 1.5rem;
+            color: #76c7c0;
+            margin: 20px 40px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        /* Контейнер для горизонтальной прокрутки */
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+            white-space: nowrap;
+            gap: 10px;
+        }
+
+        .item-card {
+            background-color: #383b49;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            display: inline-block;
+            transition: transform 0.3s;
+            text-align: center;
+            flex: 0 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .item-card:hover {
+            transform: scale(1.05);
+        }
+
+        .item-card h3 {
+            font-size: 1.3rem;
+            margin: 10px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-card img {
+            width: 60px;
+            margin-bottom: 10px;
+        }
+
+        .item-card p {
+            font-size: 0.8rem;
+            margin: 5px 0;
+            color: #ff8ea3;
+        }
+
+        .btn-buy {
+            background-color: #ff8ea3;
+            color: #1d1f27;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-buy:hover {
+            background-color: #e67e94;
+        }
+
+        /* Всплывающее окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #383b49;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #f1f1f1;
+        }
+
+        /* Центрирование текста в футере */
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #c1c1c1;
+            font-size: 0.9rem;
+        }
+
+        /* Анимация выдвижения снизу */
+        .shop-page {
+            position: relative;
+            animation: slideIn 0.5s forwards;
+            transform: translateY(100%);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="shop-page">
+
+    <header>
+        <button class="back-button" onclick="goBack()">
+            <i class="fas fa-arrow-left" style="font-size: 1.5rem; color: #76c7c0;"></i>
+        </button>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LV MineServer Logo" class="logo">
+        </div>
+        <h1>Shop</h1>
+        <p>Purchase exciting items to enhance your Minecraft experience!</p>
+    </header>
+
+    <!--  раздел Kits  -->
+    <div class="section-title">Kits</div>
+
+    <div class="scroll-container" id="featured-items">
+        <div class="item-card">
+            <h3>Diamond Rank</h3>
+            <img src="https://img.icons8.com/color/96/diamond.png" alt="Diamond Icon">
+            <p>$12.50 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Extra Resources Pack</h3>
+            <img src="https://img.icons8.com/color/96/box.png" alt="Box Icon">
+            <p>$15.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Emerald Rank</h3>
+            <img src="https://img.icons8.com/color/96/emerald.png" alt="Emerald Icon">
+            <p>$10.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Starter Pack</h3>
+            <img src="https://img.icons8.com/color/96/box-important.png" alt="Starter Icon">
+            <p>$5.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Mining Tools</h3>
+            <img src="https://img.icons8.com/color/96/pickaxe.png" alt="Pickaxe Icon">
+            <p>$8.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Protection Gear</h3>
+            <img src="https://img.icons8.com/color/96/armor.png" alt="Armor Icon">
+            <p>$20.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Magic Wand</h3>
+            <img src="https://img.icons8.com/color/96/magic-wand.png" alt="Wand Icon">
+            <p>$25.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+    </div>
+
+    <!--  раздел Roles  -->
+    <div class="section-title">Roles</div>
+
+    <div class="scroll-container" id="featured-items">
+        <div class="item-card">
+            <h3>Diamond Rank</h3>
+            <img src="https://img.icons8.com/color/96/diamond.png" alt="Diamond Icon">
+            <p>$12.50 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Extra Resources Pack</h3>
+            <img src="https://img.icons8.com/color/96/box.png" alt="Box Icon">
+            <p>$15.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Emerald Rank</h3>
+            <img src="https://img.icons8.com/color/96/emerald.png" alt="Emerald Icon">
+            <p>$10.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Starter Pack</h3>
+            <img src="https://img.icons8.com/color/96/box-important.png" alt="Starter Icon">
+            <p>$5.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Mining Tools</h3>
+            <img src="https://img.icons8.com/color/96/pickaxe.png" alt="Pickaxe Icon">
+            <p>$8.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Protection Gear</h3>
+            <img src="https://img.icons8.com/color/96/armor.png" alt="Armor Icon">
+            <p>$20.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+
+        <div class="item-card">
+            <h3>Magic Wand</h3>
+            <img src="https://img.icons8.com/color/96/magic-wand.png" alt="Wand Icon">
+            <p>$25.00 USD</p>
+            <button class="btn-buy">Buy Now</button>
+        </div>
+    </div>
+
+
+    <footer>
+        <p>&copy; 2024 My Minecraft Server. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+</body>
+</html>

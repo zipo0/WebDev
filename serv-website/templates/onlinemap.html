@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Map - Minecraft Server</title>
+    <!-- Подключение Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Подключение Minecraft-стиля шрифта -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Подключение Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1d1f27;
+            color: #f1f1f1;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Sticky Navigation Bar */
+        .nav-links {
+            position: sticky;
+            top: 0;
+            background-color: rgba(29, 31, 39, 0.9);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+        /* Header стили */
+        header {
+            position: relative;
+            padding: 100px 40px;
+            background: linear-gradient(rgba(29, 31, 39, 0.85), rgba(29, 31, 39, 0.85)), 
+                        url("{{ url_for('static', filename='images/background.jpg') }}") no-repeat center center / cover;
+            width: 100vw;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Информация о сервере и Discord */
+        .info {
+            position: absolute;
+            top: 20px;
+            font-size: 0.9rem;
+            color: #f1f1f1;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: rgba(29, 31, 39, 0.8);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .server-info {
+            left: 20px;
+        }
+
+        .discord-info {
+            right: 20px;
+        }
+
+        .info i {
+            margin-right: 8px;
+        }
+
+        /* Логотип и текст */
+        .logo-container {
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out forwards;
+            z-index: 2;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            transition: transform 0.5s ease;
+        }
+
+        .logo-container:hover .logo {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        /* Заголовки */
+        header h1 {
+            color: #76c7c0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #76c7c0;
+            width: fit-content;
+            animation: typing 1.5s steps(30, end), blink 0.7s step-end infinite alternate;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Кнопки навигации */
+        .nav-links .btn {
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #76c7c0;
+            border: 1px solid #76c7c0;
+            background-color: transparent;
+            transition: background-color 0.3s ease, transform 0.3s;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .nav-links .btn:hover {
+            background-color: #76c7c0;
+            color: #1d1f27;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Описание сервера */
+        .description-section {
+            background-color: #2a2d3a;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px auto;
+            width: 95%;  /* Увеличение ширины */
+            max-width: 1200px; /* Увеличение максимальной ширины */
+            text-align: center;
+        }
+
+        /* Центрирование текста в футере */
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #c1c1c1;
+            font-size: 0.9rem;
+        }
+
+        /* Footer Links */
+        .footer-links {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            color: #76c7c0;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Блоки с информацией о сервере и Discord в верхних углах -->
+<div class="info server-info">
+    <i class="fas fa-server"></i> 
+    <div>IP: play.yourserver.net <br> Online: 120 players</div>
+</div>
+
+<div class="info discord-info">
+    <i class="fab fa-discord"></i> 
+    <div>Discord: 722 <br> online</div>
+</div>
+
+<header>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LV MineServer Logo" class="logo">
+    </div>
+    <h1>Online Map</h1>
+    <p>Check out the current players and their locations!</p>
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}" class="btn">Home</a>
+        <a href="{{ url_for('news') }}" class="btn">News</a>
+        <a href="{{ url_for('onlinemap') }}" class="btn">Online Map</a>
+        <a href="{{ url_for('shop') }}" class="btn">Shop</a>
+    </div>
+</header>
+
+<section class="description-section">
+    <h2>Current Players on the Map</h2>
+    <div id="map" style="height: 600px; width: 100%; background-color: #2a2d3a;">
+        <!-- Здесь может быть карта вашего сервера -->
+        <p style="color: #76c7c0;">(Карта будет отображаться здесь)</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 My Minecraft Server. All rights reserved.</p>
+    <div class="footer-links">
+        <a href="#server-info">Server Info</a>
+        <a href="#news">News</a>
+        <a href="https://discord.com" target="_blank">Discord</a>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // You can add map-related JavaScript here
+</script>
+
+</body>
+</html>

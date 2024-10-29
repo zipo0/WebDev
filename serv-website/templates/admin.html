@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1d1f27;
+            color: #f1f1f1;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Стили для контейнера */
+        .container {
+            margin: 30px auto;
+            width: 90%;
+            max-width: 800px;
+            background-color: #2a2d3a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Заголовки */
+        h1, h2 {
+            color: #76c7c0;
+            margin-bottom: 20px;
+        }
+
+        /* Кнопки */
+        .btn {
+            margin-top: 10px;
+            color: #f1f1f1;
+            background-color: #76c7c0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #5fa6a5;
+        }
+
+        /* Уведомления */
+        .alert {
+            margin-top: 10px;
+        }
+
+        /* Error alert */
+        .alert-error {
+            color: red;
+        }
+
+        /* Формы */
+        form div {
+            margin-bottom: 15px;
+            text-align: left; /* Align form labels to the left */
+        }
+
+        /* Инпуты */
+        input[type="text"], input[type="password"], textarea {
+            width: 100%; /* Full width */
+            padding: 10px;
+            border: 1px solid #76c7c0;
+            border-radius: 5px;
+            background-color: #383b49;
+            color: #f1f1f1;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+            border-color: #76c7c0;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <a href="{{ url_for('news') }}" class="btn">View News</a>
+    </header>
+    <div class="container">
+        <h2>Add News</h2>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}  <!-- Скрытое поле для CSRF -->
+            <div>
+                {{ form.title.label }}<br>
+                {{ form.title(size=32) }}<br>
+                {% for error in form.title.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.content.label }}<br>
+                {{ form.content(cols=32, rows=5) }}<br>
+                {% for error in form.content.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div>
+                <label for="password">Password to Publish:</label><br>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <div>
+                {{ form.submit(class="btn") }}
+            </div>
+        </form>
+
+        <h2>Existing News</h2>
+        <ul class="list-unstyled">
+        {% for news in news_items %}
+            <li class="mb-3">
+                <h3>{{ news.title }}</h3>
+                <p>{{ news.content }}</p>
+                <p><small>Published on: {{ news.publication_date.strftime('%Y-%m-%d') }}</small></p>
+                <form method="POST" action="{{ url_for('delete_news', news_id=news.id) }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <label for="delete_password_{{ news.id }}">Password to Delete:</label><br>
+                    <input type="password" name="delete_password" id="delete_password_{{ news.id }}" required>
+                    <button type="submit" class="btn">Delete</button> <!-- Removed the onclick confirmation -->
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert">
+                    {% for category, message in messages %}
+                        <p class="{% if category == 'error' %}alert-error{% endif %}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

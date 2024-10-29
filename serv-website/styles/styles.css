@@ -1,0 +1,28 @@
+/* Server and Discord info in top corners with style */
+.server-info, .discord-info {
+    position: absolute;
+    top: 20px;
+    padding: 10px 15px;
+    width: 180px; /* Регулируемая ширина для оптимального размещения текста */
+    font-size: 0.85rem;
+    color: #f1f1f1;
+    background: rgba(44, 47, 59, 0.8);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column; /* Расположение текста по вертикали */
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 10;
+    word-break: break-word; /* Перенос слов для предотвращения выхода текста за границы */
+    line-height: 1.2; /* Сжатие расстояния между строками для лучшей компактности */
+}
+
+.server-info {
+    left: 20px;
+}
+
+.discord-info {
+    right: 20px;
+}
