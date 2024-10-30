@@ -73,12 +73,11 @@ def admin():
 @app.route('/onlinemap')
 def onlinemap():
     # Здесь логика для отображения онлайн карты
-    return render_template('onlinemap.html')
+    return render_template('map.html')
 
 @app.route('/shop')
 def shop():
     return render_template('shop.html')
-
 
 
 
