@@ -67,7 +67,7 @@
         }
 
         /* Инпуты */
-        input[type="text"], input[type="password"], textarea {
+        input[type="text"], input[type="password"], textarea, input[type="file"] {
             width: 100%; /* Full width */
             padding: 10px;
             border: 1px solid #76c7c0;
@@ -76,7 +76,7 @@
             color: #f1f1f1;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus, input[type="file"]:focus {
             border-color: #76c7c0;
             outline: none;
         }
@@ -89,7 +89,7 @@
     </header>
     <div class="container">
         <h2>Add News</h2>
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}  <!-- Скрытое поле для CSRF -->
             <div>
                 {{ form.title.label }}<br>
@@ -102,6 +102,13 @@
                 {{ form.content.label }}<br>
                 {{ form.content(cols=32, rows=5) }}<br>
                 {% for error in form.content.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.image.label }}<br>
+                {{ form.image() }}<br>
+                {% for error in form.image.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
             </div>
@@ -120,6 +127,9 @@
             <li class="mb-3">
                 <h3>{{ news.title }}</h3>
                 <p>{{ news.content }}</p>
+                {% if news.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' + news.image_filename) }}" alt="News Image" style="max-width: 100%; height: auto;">
+                {% endif %}
                 <p><small>Published on: {{ news.publication_date.strftime('%Y-%m-%d') }}</small></p>
                 <form method="POST" action="{{ url_for('delete_news', news_id=news.id) }}">
                     <input type="hidden" name="_method" value="DELETE">

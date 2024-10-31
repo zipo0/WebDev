@@ -6,6 +6,10 @@ from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, url_for, flash, request
 from mcstatus import JavaServer
+import os
+from werkzeug.utils import secure_filename
+from flask_wtf.file import FileField, FileAllowed
+
 
 
 
@@ -14,6 +18,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'  # Замените на свой секретный ключ
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Ограничение на 16MB
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -24,10 +30,13 @@ class News(db.Model):
     publication_date = db.Column(db.DateTime, default=db.func.current_timestamp())
     author = db.Column(db.String(50), nullable=False)
     status = db.Column(db.String(10), default='published')
+    image_filename = db.Column(db.String(100))  # Добавляем поле для хранения имени файла изображения
+
 
 class NewsForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Content', validators=[DataRequired()])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
     submit = SubmitField('Submit')
 
 @app.route('/delete_news/<int:news_id>', methods=['POST'])
@@ -64,7 +73,20 @@ def admin():
     if form.validate_on_submit():
         password = request.form.get('password')
         if password == 'Leva2015':  # Use your actual password
-            new_news = News(title=form.title.data, content=form.content.data, author='Admin')
+            image_filename = None
+            if form.image.data:
+                # Сохраняем загружаемое изображение
+                image_file = form.image.data
+                image_filename = secure_filename(image_file.filename)
+                image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
+            
+            # Создаем новую запись о новости
+            new_news = News(
+                title=form.title.data,
+                content=form.content.data,
+                author='Admin',
+                image_filename=image_filename
+            )
             db.session.add(new_news)
             db.session.commit()
             flash('News added successfully!', 'success')

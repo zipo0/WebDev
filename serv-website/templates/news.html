@@ -222,6 +222,9 @@
     {% for news in news_items %}
         <div class="news-item">
             <h3>{{ news.title }}</h3>
+            {% if news.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + news.image_filename) }}" alt="News Image" style="max-width: 100%; height: auto;">
+            {% endif %}
             <p>{{ news.content }}</p>
             <p><small>Published on: {{ news.publication_date.strftime('%Y-%m-%d') }}</small></p>
         </div>
