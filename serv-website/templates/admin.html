@@ -106,9 +106,9 @@
                 {% endfor %}
             </div>
             <div>
-                {{ form.image.label }}<br>
-                {{ form.image() }}<br>
-                {% for error in form.image.errors %}
+                {{ form.images.label }}<br>
+                {{ form.images() }}<br>
+                {% for error in form.images.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
             </div>
@@ -127,9 +127,9 @@
             <li class="mb-3">
                 <h3>{{ news.title }}</h3>
                 <p>{{ news.content }}</p>
-                {% if news.image_filename %}
-                    <img src="{{ url_for('static', filename='uploads/' + news.image_filename) }}" alt="News Image" style="max-width: 100%; height: auto;">
-                {% endif %}
+                {% for image in news.images %}
+                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="News Image" style="max-width: 50%; height: auto; margin-top: 10px; border-radius: 10px;">
+                {% endfor %}
                 <p><small>Published on: {{ news.publication_date.strftime('%Y-%m-%d') }}</small></p>
                 <form method="POST" action="{{ url_for('delete_news', news_id=news.id) }}">
                     <input type="hidden" name="_method" value="DELETE">

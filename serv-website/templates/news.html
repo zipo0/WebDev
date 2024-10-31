@@ -142,7 +142,7 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            text-align: left; /* Выравнивание текста влево */
+            text-align: left; /* Выравнивание текста для более чистого вида */
         }
 
         .news-item {
@@ -164,6 +164,8 @@
             margin: 5px 0;
             color: #c1c1c1; /* Изменение цвета абзаца для лучшей читаемости */
             text-align: justify; /* Выравнивание текста для более чистого вида */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* Центрирование текста в футере */
@@ -222,10 +224,26 @@
     {% for news in news_items %}
         <div class="news-item">
             <h3>{{ news.title }}</h3>
-            {% if news.image_filename %}
-                <img src="{{ url_for('static', filename='uploads/' + news.image_filename) }}" alt="News Image" style="max-width: 100%; height: auto;">
-            {% endif %}
             <p>{{ news.content }}</p>
+            {% if news.images %}
+                <div id="carousel{{ news.id }}" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in news.images %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" class="d-block w-100" alt="News Image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev" href="#carousel{{ news.id }}" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel{{ news.id }}" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            {% endif %}
             <p><small>Published on: {{ news.publication_date.strftime('%Y-%m-%d') }}</small></p>
         </div>
         <hr>
