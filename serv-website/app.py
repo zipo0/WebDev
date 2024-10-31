@@ -5,6 +5,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, url_for, flash, request
+from mcstatus import JavaServer
+
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'  # Замените на свой секретный ключ
@@ -43,12 +47,14 @@ def delete_news(news_id):
 
 @app.route('/home')
 def home():
-    return render_template('index.html')
+    mconline = getOnline()
+    return render_template('index.html', online=mconline)
 
 @app.route('/news')
 def news():
+    mconline = getOnline()
     news_items = News.query.order_by(News.publication_date.desc()).all()  # Fetch all news items sorted by publication date
-    return render_template('news.html', news_items=news_items)
+    return render_template('news.html', news_items=news_items, online=mconline)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -73,13 +79,17 @@ def admin():
 @app.route('/onlinemap')
 def onlinemap():
     # Здесь логика для отображения онлайн карты
-    return render_template('map.html')
+    mconline = getOnline()
+    return render_template('map.html', online = mconline)
 
 @app.route('/shop')
 def shop():
     return render_template('shop.html')
 
-
+def getOnline():
+    server = JavaServer.lookup("mc.lunvex.online")
+    status = server.status()
+    return status.players.online
 
 
 if __name__ == '__main__':
