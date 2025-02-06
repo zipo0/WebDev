@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensures proper scaling on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Base styles */
+        body {
+            font-size: 1.1rem;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-brand, .navbar-text {
+            font-size: 1.3rem;
+        }
+        .btn {
+            padding: 0.75rem 1.25rem;
+        }
+        /* Logo styling */
+        .school-logo {
+            background-color: transparent !important;
+            max-height: 50px;
+            margin-right: 10px;
+        }
+        /* Footer styling */
+        footer {
+            background-color: #f8f9fa;
+            color: #666;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+        }
+        /* Additional container padding */
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* Media query для мобильных устройств */
+        @media (max-width: 768px) {
+            .navbar-brand, .navbar-text {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <!-- Adding the logo before the title -->
+            <a class="navbar-brand" href="{% url 'reservation' %}">
+                <img src="{% static 'img/logo.png' %}" alt="School Logo" class="school-logo">
+                Laptop Booking System
+            </a>
+            <div class="d-flex">
+                <span class="navbar-text me-3">
+                    Logged in as {{ request.user.username }}
+                </span>
+                <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- Django messages output -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; {{ now|date:"Y" }} (dev) Lev Vedrov: Leva20151515@gmail.com.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

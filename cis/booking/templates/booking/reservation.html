@@ -1,0 +1,124 @@
+{% extends 'booking/base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+<!-- Section: Select Booking Time -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="mb-4 text-center">Select Booking Time</h2>
+    <p class="lead text-center mb-4">Please specify the time interval during which you need laptops for classes.</p>
+    <form method="post" id="time-form">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-6">
+          {{ form.start_time.label_tag }}
+          {{ form.start_time|add_class:"form-control form-control-lg" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.end_time.label_tag }}
+          {{ form.end_time|add_class:"form-control form-control-lg" }}
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">Show Available Laptops</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% if available_shelves and selected_start and selected_end %}
+<!-- Section: Choose Laptops -->
+<section class="py-5">
+  <div class="container">
+    <h3 class="mb-4 text-center">Available Laptops from {{ selected_start }} to {{ selected_end }}</h3>
+    <form method="post" action="{% url 'book_multiple' %}" id="booking-form">
+      {% csrf_token %}
+      <!-- Hidden fields for the time interval -->
+      <input type="hidden" name="start_time" value="{{ selected_start }}">
+      <input type="hidden" name="end_time" value="{{ selected_end }}">
+      <!-- Hidden field for storing selected IDs (comma-separated) -->
+      <input type="hidden" id="selected_shelves" name="selected_shelves" value="">
+
+      <!-- Block for Floor 2 laptops -->
+      <div class="mb-5">
+        <h4 class="text-center mb-3">Floor 2</h4>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+          {% for shelf in available_shelves %}
+            {% if shelf.floor == 2 %}
+              <div class="col">
+                <button type="button" class="btn btn-outline-success shelf-btn w-100" data-shelf-id="{{ shelf.id }}">
+                  Floor {{ shelf.floor }} : N{{ shelf.number }}
+                </button>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Block for Floor 3 laptops -->
+      <div>
+        <h4 class="text-center mb-3">Floor 3</h4>
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+          {% for shelf in available_shelves %}
+            {% if shelf.floor == 3 %}
+              <div class="col">
+                <button type="button" class="btn btn-outline-success shelf-btn w-100" data-shelf-id="{{ shelf.id }}">
+                  Floor {{ shelf.floor }} : N{{ shelf.number }}
+                </button>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const buttons = document.querySelectorAll(".shelf-btn");
+  let selectedShelves = [];
+
+  buttons.forEach(button => {
+    button.addEventListener("click", function() {
+      const shelfId = this.getAttribute("data-shelf-id");
+      if (selectedShelves.includes(shelfId)) {
+        selectedShelves = selectedShelves.filter(id => id !== shelfId);
+        this.classList.remove("active");
+      } else {
+        selectedShelves.push(shelfId);
+        this.classList.add("active");
+      }
+      document.getElementById("selected_shelves").value = selectedShelves.join(",");
+    });
+  });
+});
+</script>
+{% endif %}
+
+<!-- Section: My Bookings -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h3 class="mb-4 text-center">My Bookings</h3>
+    {% for reservation in request.user.reservation_set.all %}
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ reservation.shelf }}</h5>
+          <p class="card-text">From: {{ reservation.start_time }} to {{ reservation.end_time }}</p>
+          <form action="{% url 'cancel_reservation' reservation.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg">Cancel</button>
+          </form>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center">No active bookings.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

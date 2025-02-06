@@ -1,0 +1,77 @@
+/* Увеличиваем базовый размер шрифта */
+body {
+    font-size: 1.2rem;
+}
+
+/* Увеличенные заголовки */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Увеличиваем размер кнопок */
+.btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* Если требуется увеличить отступы у карточек и списков */
+.card, .alert {
+    margin-bottom: 1rem;
+}
+
+/* Дополнительное увеличение для мобильных устройств */
+@media (max-width: 768px) {
+    body {
+        font-size: 1.3rem;
+    }
+    .btn {
+        padding: 1rem 1.75rem;
+        font-size: 1.2rem;
+    }
+}
+
+
+
+.btn-custom {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-custom:hover,
+.btn-custom:focus {
+    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    outline: none;
+}
+
+/* Дополнительный стиль для кнопок отмены или предупреждений */
+.btn-custom-danger {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-custom-danger:hover,
+.btn-custom-danger:focus {
+    background: linear-gradient(45deg, #ff4b2b, #ff416c);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    outline: none;
+}
+
+
+
+
+
