@@ -6,4 +6,5 @@
 <p><b>5.</b> Запустите миграции (python manage.py migrate), создайте суперпользователя (python manage.py createsuperuser) и соберите статические файлы (python manage.py collectstatic).</p>
 <p><b>6.</b> Создайте модель (SPB: python manage.py create_shelves)</p>
 <p><b>7.</b> Запустите сервер разработки для проверки работы сайта (python manage.py runserver [ip]).</p>
+<p><b>7.</b>Установить скрипт clear_expired_booking.py в менеджер задач на каждые 5 минут. (C:\Users\Admin\venv\Scripts\python.exe C:\Users\Admin\Documents\GitHub\WebDev\cis\manage.py clear_expired_bookings)</p>
 <p><r>(Опционально) Настройте Gunicorn и Nginx для продакшн-развёртывания, используя systemd и конфигурацию Nginx.</r><</p>
