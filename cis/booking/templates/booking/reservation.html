@@ -1,27 +1,98 @@
 {% extends 'booking/base.html' %}
 {% load widget_tweaks %}
 {% load static %}
+{% load tz %}
+{% load datetime_extras %}
 
 {% block content %}
+<!-- Встроенные стили для улучшения дизайна страницы -->
+<style>
+  /* Общий отступ для секций */
+  section.py-5 { background-color: #f8f9fa; }
+  
+  /* Стили для заголовков секций */
+  h2, h3, h4, h5 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  
+  /* Стили для блока бронирований */
+  .booking-group {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #ffffff;
+  }
+  
+  /* Улучшение читаемости заголовка группы */
+  .booking-group h5 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Дополнительное оформление списков бронирований */
+  .list-group-item {
+    border: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Стили для формы отмены группы */
+  .cancel-group-btn {
+    font-size: 0.9rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .btn-custom-blue {
+  background-color: #053a6e; /* темносиний фон */
+  border-color: #003366;     /* темносиние границы */
+  color: #fff;               /* белый текст */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-custom-blue:hover,
+.btn-custom-blue:focus {
+  background-color: #002244; /* немного более тёмный оттенок при наведении */
+  border-color: #002244;
+  color: #fff;
+}
+
+@media (max-width: 575.98px) {
+  .btn-custom-lg {
+    font-size: 1.1rem;    /* немного меньше шрифт */
+    padding: 0.8rem 1.2rem; /* уменьшенные отступы */
+  }
+}
+</style>
+
 <!-- Section: Select Booking Time -->
 <section class="py-5 bg-light">
   <div class="container">
     <h2 class="mb-4 text-center">Select Booking Time</h2>
-    <p class="lead text-center mb-4">Please specify the time interval during which you need laptops for classes.</p>
+    <p class="lead text-center mb-4">
+      Please specify the time interval during which you need laptops for classes.
+    </p>
     <form method="post" id="time-form">
       {% csrf_token %}
       <div class="row g-3">
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
           {{ form.start_time.label_tag }}
           {{ form.start_time|add_class:"form-control form-control-lg" }}
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
           {{ form.end_time.label_tag }}
           {{ form.end_time|add_class:"form-control form-control-lg" }}
         </div>
       </div>
       <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary btn-lg">Show Available Laptops</button>
+
+        <button type="submit" class="btn btn-custom-blue btn-custom-lg">
+          Show Available Laptops
+        </button>
+
       </div>
     </form>
   </div>
@@ -31,23 +102,24 @@
 <!-- Section: Choose Laptops -->
 <section class="py-5">
   <div class="container">
-    <h3 class="mb-4 text-center">Available Laptops from {{ selected_start }} to {{ selected_end }}</h3>
+    <h3 class="mb-4 text-center">
+      Available Laptops from {{ selected_start }} to {{ selected_end }}
+    </h3>
     <form method="post" action="{% url 'book_multiple' %}" id="booking-form">
       {% csrf_token %}
-      <!-- Hidden fields for the time interval -->
       <input type="hidden" name="start_time" value="{{ selected_start }}">
       <input type="hidden" name="end_time" value="{{ selected_end }}">
-      <!-- Hidden field for storing selected IDs (comma-separated) -->
       <input type="hidden" id="selected_shelves" name="selected_shelves" value="">
 
-      <!-- Block for Floor 2 laptops -->
       <div class="mb-5">
         <h4 class="text-center mb-3">Floor 2</h4>
-        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
           {% for shelf in available_shelves %}
             {% if shelf.floor == 2 %}
               <div class="col">
-                <button type="button" class="btn btn-outline-success shelf-btn w-100" data-shelf-id="{{ shelf.id }}">
+                <button type="button"
+                        class="btn btn-outline-success shelf-btn custom-btn w-100"
+                        data-shelf-id="{{ shelf.id }}">
                   Floor {{ shelf.floor }} : N{{ shelf.number }}
                 </button>
               </div>
@@ -56,14 +128,15 @@
         </div>
       </div>
 
-      <!-- Block for Floor 3 laptops -->
       <div>
         <h4 class="text-center mb-3">Floor 3</h4>
-        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
           {% for shelf in available_shelves %}
             {% if shelf.floor == 3 %}
               <div class="col">
-                <button type="button" class="btn btn-outline-success shelf-btn w-100" data-shelf-id="{{ shelf.id }}">
+                <button type="button"
+                        class="btn btn-outline-success shelf-btn custom-btn w-100"
+                        data-shelf-id="{{ shelf.id }}">
                   Floor {{ shelf.floor }} : N{{ shelf.number }}
                 </button>
               </div>
@@ -73,7 +146,12 @@
       </div>
 
       <div class="text-center mt-4">
-        <button type="submit" class="btn btn-primary btn-lg">Confirm Booking</button>
+
+        <button type="submit"
+        class="btn btn-custom-blue btn-custom-lg">
+          Confirm Booking
+        </button>
+
       </div>
     </form>
   </div>
@@ -83,7 +161,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   const buttons = document.querySelectorAll(".shelf-btn");
   let selectedShelves = [];
-
   buttons.forEach(button => {
     button.addEventListener("click", function() {
       const shelfId = this.getAttribute("data-shelf-id");
@@ -105,20 +182,71 @@ document.addEventListener("DOMContentLoaded", function() {
 <section class="py-5 bg-light">
   <div class="container">
     <h3 class="mb-4 text-center">My Bookings</h3>
-    {% for reservation in request.user.reservation_set.all %}
-      <div class="card mb-3 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">{{ reservation.shelf }}</h5>
-          <p class="card-text">From: {{ reservation.start_time }} to {{ reservation.end_time }}</p>
-          <form action="{% url 'cancel_reservation' reservation.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-lg">Cancel</button>
-          </form>
+    {% regroup request.user.reservation_set.all by booking_period as reservations_by_period %}
+    {% if reservations_by_period %}
+      {% for group in reservations_by_period %}
+        <div class="card mb-4 shadow-sm">
+          <!-- Заголовок группы с фоном, как у шапки -->
+          <div class="card-header bg-dark text-white text-center">
+            <h5 class="mb-0">
+              {{ group.grouper|replace:" - ,<br>"|safe }}
+            </h5>
+            <div class="mt-2">
+              <span class="badge bg-light text-dark me-2">
+                {% with group.list|length as computer_count %}
+                  {{ computer_count }} computer{{ computer_count|pluralize }}
+                {% endwith %}
+              </span>
+              <span class="badge bg-light text-dark">
+                Duration: {% with group.list.0.start_time as start %}
+                            {% with group.list.0.end_time as end %}
+                              {{ start|duration_minutes:end }} minutes
+                            {% endwith %}
+                          {% endwith %}
+              </span>
+            </div>
+          </div>
+          <!-- Содержимое группы -->
+          <div class="card-body">
+            <div class="list-group">
+              {% for reservation in group.list %}
+                <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center py-3">
+                  <div>
+                    <strong>{{ reservation.shelf }}</strong><br>
+                    <small class="text-muted">
+                      {{ reservation.start_time|localtime|date:"d.m.Y H:i" }} – 
+                      {{ reservation.end_time|localtime|date:"d.m.Y H:i" }}
+                    </small>
+                  </div>
+                  <div class="mt-2 mt-md-0">
+                    <form action="{% url 'cancel_reservation' reservation.id %}" method="post" class="mb-0">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger btn-sm custom-btn">
+                        Cancel
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- Футер группы с кнопкой отмены всей группы -->
+          <div class="card-footer text-end">
+            <form action="{% url 'cancel_reservation_group' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              {% for reservation in group.list %}
+                <input type="hidden" name="reservation_ids" value="{{ reservation.id }}">
+              {% endfor %}
+              <button type="submit" class="btn btn-outline-danger btn-sm custom-btn">
+                Cancel All
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    {% empty %}
+      {% endfor %}
+    {% else %}
       <p class="text-center">No active bookings.</p>
-    {% endfor %}
+    {% endif %}
   </div>
 </section>
 {% endblock %}

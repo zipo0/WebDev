@@ -8,6 +8,7 @@ from django.contrib import messages
 from datetime import datetime
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.views.decorators.http import require_POST
 
 @login_required
 def reservation_view(request):
@@ -97,18 +98,26 @@ def cancel_reservation(request, reservation_id):
 
 def parse_custom_datetime(dt_str):
     """
-    Converts a string of the form 'Feb. 6, 2025, 12:50 a.m.' to a datetime object.
+    Converts a string of the form 'Feb. 6, 2025, 12:50 a.m.' or 'March 5, 2025, 12:02 AM'
+    to a datetime object.
     """
     dt_str = dt_str.strip()
-    # Replace time designations
+    # Заменяем обозначения времени
     dt_str = dt_str.replace("a.m.", "AM").replace("p.m.", "PM")
-    try:
-        # Try with the dot in the month abbreviation
-        dt = datetime.strptime(dt_str, "%b. %d, %Y, %I:%M %p")
-    except ValueError:
-        # If that fails, try without the dot
-        dt = datetime.strptime(dt_str, "%b %d, %Y, %I:%M %p")
-    return dt
+    
+    # Список форматов для попытки парсинга
+    formats = [
+        "%b. %d, %Y, %I:%M %p",  # с точкой в сокращённом названии месяца, например "Feb."
+        "%b %d, %Y, %I:%M %p",   # без точки, например "Feb"
+        "%B %d, %Y, %I:%M %p"    # с полным названием месяца, например "March"
+    ]
+    
+    for fmt in formats:
+        try:
+            return datetime.strptime(dt_str, fmt)
+        except ValueError:
+            continue
+    raise ValueError(f"time data {dt_str!r} does not match any supported format")
 
 @login_required
 def book_multiple(request):
@@ -166,3 +175,18 @@ def custom_logout(request):
     # Удаляем cookie с именем 'sessionid'
     response.delete_cookie('sessionid')
     return response
+
+@login_required
+@require_POST
+def cancel_reservation_group(request):
+    # Получаем список ID бронирований из POST-запроса
+    reservation_ids = request.POST.getlist('reservation_ids')
+    
+    # Фильтруем бронирования, принадлежащие текущему пользователю и входящие в переданный список
+    reservations = Reservation.objects.filter(id__in=reservation_ids, teacher=request.user)
+    
+    # Удаляем найденные бронирования
+    reservations.delete()
+    messages.success(request, "Booking cancelled!")
+    # Перенаправляем пользователя на страницу с бронированиями (например, на 'reservation_view')
+    return redirect('reservation')
